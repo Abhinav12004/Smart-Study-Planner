@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Study Planner</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">📚 Smart Study Planner</h1>
+                <div class="header-actions">
+                    <button class="btn btn--outline btn--sm" id="themeToggle">🌙</button>
+                    <button class="btn btn--primary btn--sm" id="quickAddBtn">+ Add Task</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav">
+            <button class="nav-btn active" data-view="dashboard">📊 Dashboard</button>
+            <button class="nav-btn" data-view="tasks">📋 Tasks</button>
+            <button class="nav-btn" data-view="calendar">📅 Calendar</button>
+            <button class="nav-btn" data-view="timer">⏱️ Timer</button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard View -->
+            <div id="dashboardView" class="view active">
+                <div class="dashboard-header">
+                    <div class="welcome-section">
+                        <h2 id="welcomeMessage">Welcome back!</h2>
+                        <p id="currentDateTime" class="text-secondary"></p>
+                    </div>
+                    <div class="quick-stats">
+                        <div class="stat-card">
+                            <div class="stat-number" id="totalTasks">0</div>
+                            <div class="stat-label">Total Tasks</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="completedTasks">0</div>
+                            <div class="stat-label">Completed</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="pendingTasks">0</div>
+                            <div class="stat-label">Pending</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number" id="overdueTasks">0</div>
+                            <div class="stat-label">Overdue</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="dashboard-section">
+                        <h3>Progress Overview</h3>
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="overallProgress"></div>
+                            </div>
+                            <span id="progressText">0% Complete</span>
+                        </div>
+                        <canvas id="subjectChart" width="300" height="200"></canvas>
+                    </div>
+
+                    <div class="dashboard-section">
+                        <h3>Today's Tasks</h3>
+                        <div id="todaysTasks" class="task-list"></div>
+                    </div>
+
+                    <div class="dashboard-section">
+                        <h3>Upcoming Deadlines</h3>
+                        <div id="upcomingDeadlines" class="deadline-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tasks View -->
+            <div id="tasksView" class="view">
+                <div class="tasks-header">
+                    <h2>Manage Tasks</h2>
+                    <div class="tasks-controls">
+                        <input type="text" id="searchTasks" class="form-control" placeholder="Search tasks...">
+                        <select id="filterSubject" class="form-control">
+                            <option value="">All Subjects</option>
+                        </select>
+                        <select id="filterPriority" class="form-control">
+                            <option value="">All Priorities</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                        <select id="filterStatus" class="form-control">
+                            <option value="">All Status</option>
+                            <option value="not-started">Not Started</option>
+                            <option value="in-progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="task-form-section">
+                    <button class="btn btn--primary" id="showTaskForm">+ Add New Task</button>
+                    
+                    <div id="taskForm" class="task-form card hidden">
+                        <h3 id="formTitle">Add New Task</h3>
+                        <form id="taskFormElement">
+                            <div class="form-group">
+                                <label class="form-label">Task Title *</label>
+                                <input type="text" id="taskTitle" class="form-control" required>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Subject</label>
+                                    <select id="taskSubject" class="form-control">
+                                        <option value="Theory of Computation">Theory of Computation</option>
+                                        <option value="Physics">Physics</option>
+                                        <option value="Computer Science">Computer Science</option>
+                                        <option value="Data Structures">Data Structures</option>
+                                        <option value="Algorithms">Algorithms</option>
+                                        <option value="Operating Systems">Operating Systems</option>
+                                        <option value="Database Management System">Database Management System</option>
+                                        <option value="Software Engineering">Software Engineering</option>
+                                        <option value="Machine Learning">Machine Learning</option>
+                                        <option value="Artificial Intelligence">Artificial Intelligence</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Priority</label>
+                                    <select id="taskPriority" class="form-control">
+                                        <option value="low">Low</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="high">High</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea id="taskDescription" class="form-control" rows="3"></textarea>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Due Date</label>
+                                    <input type="date" id="taskDueDate" class="form-control">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Due Time</label>
+                                    <input type="time" id="taskDueTime" class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Estimated Hours</label>
+                                    <input type="number" id="taskHours" class="form-control" min="0.5" max="24" step="0.5">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Status</label>
+                                    <select id="taskStatus" class="form-control">
+                                        <option value="not-started">Not Started</option>
+                                        <option value="in-progress">In Progress</option>
+                                        <option value="completed">Completed</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn--primary">Save Task</button>
+                                <button type="button" class="btn btn--secondary" id="cancelForm">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div id="tasksList" class="tasks-grid"></div>
+            </div>
+
+            <!-- Calendar View -->
+            <div id="calendarView" class="view">
+                <div class="calendar-header">
+                    <h2>Calendar View</h2>
+                    <div class="calendar-controls">
+                        <div class="calendar-nav">
+                            <button class="btn btn--outline" id="prevMonth" title="Previous Month">‹</button>
+                            <button class="btn btn--outline" id="todayBtn" title="Go to Today">Today</button>
+                            <span id="currentMonth">September 2025</span>
+                            <button class="btn btn--outline" id="nextMonth" title="Next Month">›</button>
+                        </div>
+                        <div class="calendar-view-options">
+                            <button class="btn btn--sm btn--outline active" id="monthView">Month</button>
+                            <button class="btn btn--sm btn--outline" id="weekView">Week</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="calendar"></div>
+                <div id="calendarLegend" class="calendar-legend">
+                    <div class="legend-item">
+                        <div class="legend-color priority-high"></div>
+                        <span>High Priority</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color priority-medium"></div>
+                        <span>Medium Priority</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color priority-low"></div>
+                        <span>Low Priority</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timer View -->
+            <div id="timerView" class="view">
+                <div class="timer-container">
+                    <h2>Study Timer</h2>
+                    <div class="timer-display">
+                        <div class="time-circle">
+                            <div class="time-text" id="timerDisplay">25:00</div>
+                        </div>
+                    </div>
+                    <div class="timer-controls">
+                        <button class="btn btn--primary" id="startTimer">Start</button>
+                        <button class="btn btn--secondary" id="pauseTimer">Pause</button>
+                        <button class="btn btn--outline" id="resetTimer">Reset</button>
+                    </div>
+                    <div class="timer-presets">
+                        <button class="preset-btn" data-minutes="25">Pomodoro (25min)</button>
+                        <button class="preset-btn" data-minutes="15">Short (15min)</button>
+                        <button class="preset-btn" data-minutes="50">Long (50min)</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Task Detail Modal -->
+        <div id="taskModal" class="modal hidden">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">Task Details</h3>
+                    <button class="modal-close" id="closeModal">×</button>
+                </div>
+                <div class="modal-body" id="modalBody"></div>
+                <div class="modal-actions">
+                    <button class="btn btn--primary" id="editTaskBtn">Edit</button>
+                    <button class="btn btn--outline" id="deleteTaskBtn">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Action Button -->
+        <button class="fab" id="fabBtn">+</button>
+
+        <!-- Notification Container -->
+        <div id="notifications" class="notifications"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
